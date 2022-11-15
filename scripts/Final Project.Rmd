@@ -7,24 +7,56 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+
+library(here)
+library(rio)
+library(readr)
+library(janitor)
+library(tidyverse)
+
+race <- import(here("data", "pagr_schools_ela_tot_raceethnicity_2122.csv")) %>% 
+  clean_names() %>%
+  as_tibble()
+view(race)
+
+attend <- import(here("data", "regularattenders_report_2122.csv")) %>% 
+  clean_names() %>%
+  as_tibble()
+view(attend)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## Attendance data
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r}
+#Summarizing to check the existing student groups in the file
+attendsum <- attend %>% 
+ group_by(student_group) %>% 
+  summarise()
+attendsum
 
-```{r cars}
-summary(cars)
+
+#Filtering the dataframe leaving only student groups related to race. 
+attend_race <- attend %>% 
+   filter(student_group == "American Indian/Alaska Native" |
+          student_group == "Asian"|
+          student_group == "Black/African American" |
+          student_group == "Hispanic/Latino" |
+          student_group == "Multi-Racial" |
+          student_group == "Native Hawaiian/Pacific Islander" |
+          student_group == "Underserved Races/Ethnicities" |
+          student_group == "White")
+
+
+#Removing rows without data
+attend_race <- attend_race %>% 
+  filter(students_included != "*")
+    
+# Note: All schools with >95% and <5% regular attenders were eliminated. 
+#These rows corresponded with schools where less than 9 students were included. 
+
+dim(attend_race)
+view(attend_race)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
