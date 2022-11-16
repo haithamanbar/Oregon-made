@@ -38,7 +38,7 @@ attendsum
 
 
 #Filtering the dataframe leaving only student groups related to race. 
-attend_race <- attend %>% 
+attend1 <- attend %>% 
    filter(student_group == "American Indian/Alaska Native" |
           student_group == "Asian"|
           student_group == "Black/African American" |
@@ -50,13 +50,36 @@ attend_race <- attend %>%
 
 
 #Removing rows without data
-attend_race <- attend_race %>% 
+attend1 <- attend1%>% 
   filter(students_included != "*")
     
 # Note: All schools with >95% and <5% regular attenders were eliminated. 
 #These rows corresponded with schools where less than 9 students were included. 
 
-dim(attend_race)
-view(attend_race)
+dim(attend1)
+view(attend1)
+```
+
+# Profficiency data
+```{r}
+
+racesum <- race %>% 
+ group_by(student_group) %>% 
+  summarise()
+
+
+#Filtering the dataframe leaving only student groups related to race. 
+race1 <- race %>% 
+   select(-grade_level) %>% 
+   filter(student_group == "American Indian/Alaskan Native" |
+          student_group == "Asian"|
+          student_group == "Black/African American" |
+          student_group == "Hispanic/Latino" |
+          student_group == "Multi-Racial" |
+          student_group == "Pacific Islander" |
+          student_group == "White") %>% 
+  filter(number_proficient != "*" &
+          number_proficient != "--")
+
 ```
 
