@@ -62,17 +62,14 @@ view(attend1)
 
 # Profficiency data
 ```{r}
-#Finding the races considered in the file
+
 racesum <- race %>% 
  group_by(student_group) %>% 
   summarise()
 
 
-#Filtering the dataframe leaving only student groups related to race.
-#Filtered again to remove rows without data on proficiency data
-#Transformed number of participants to numeric and the filtered to all >= than 10 students. 
+#Filtering the dataframe leaving only student groups related to race. 
 race1 <- race %>% 
-   select(-grade_level) %>% 
      filter(student_group == "American Indian/Alaskan Native" |
           student_group == "Asian"|
           student_group == "Black/African American" |
@@ -80,35 +77,21 @@ race1 <- race %>%
           student_group == "Multi-Racial" |
           student_group == "Pacific Islander" |
           student_group == "White") %>% 
- filter(number_proficient != "*" &
-        number_proficient != "--") %>% 
- transform(number_of_participants = as.numeric(number_of_participants)) %>% 
- filter(number_of_participants >= 10)
+  filter(number_proficient != "*" &
+          number_proficient != "--")
+view(race1)
+
+race1 <- race1 %>% 
+  as_tibble
+
+race1$number_proficient <- as.numeric(as.character(race1$number_proficient))
 race1
 
-#Transformed all columns to numbers to be able to compute them. The file had them as characters.
-race2<- race1 %>% 
-  transform(
-    number_proficient = as.numeric(number_proficient), 
-    percent_proficient_level_3_or_4 = as.numeric(percent_proficient_level_3_or_4),
-    number_level_4 = as.numeric(number_level_4), 
-    percent_level_4 = as.numeric(percent_level_4), 
-    number_level_3 = as.numeric(number_level_3), 
-    percent_level_3 = as.numeric(percent_level_3), 
-    number_level_2 = as.numeric(number_level_2), 
-    percent_level_2 = as.numeric(percent_level_2), 
-    number_level_1 = as.numeric(number_level_1),
-    percent_level_1 = as.numeric(percent_level_1), 
-    participation_rate = as.numeric(participation_rate)
-    )
-race2
-
-#Grouped data by school_id and student_group and summed all the values that corresponded to each grouping in all columns. 
-race3 <- race2 %>% 
+race2 <- race1 %>% 
  group_by(school_id, student_group) %>% 
- summarise(across(where(is.numeric), list(sum = sum)))
-race3
+ summarise(number_proficient1 = sum(number_proficient))
 
+view(race2)
 
 ```
 
