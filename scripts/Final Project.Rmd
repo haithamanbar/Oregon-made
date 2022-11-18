@@ -100,15 +100,26 @@ race2<- race1 %>%
     number_level_1 = as.numeric(number_level_1),
     percent_level_1 = as.numeric(percent_level_1), 
     participation_rate = as.numeric(participation_rate)
-    )
+    ) %>%
 race2
+view(race2)
 
-#Grouped data by school_id and student_group and summed all the values that corresponded to each grouping in all columns. 
+#Grouped data by school_id and student_group, summed the number of participants and number of proficient students, and re-calculate the percentage of proficient students.
 race3 <- race2 %>% 
- group_by(school_id, student_group) %>% 
- summarise(across(where(is.numeric), list(sum = sum)))
+ group_by(district_id,school_id, student_group) %>% 
+ summarise(number_proficient = sum(number_proficient),
+           number_of_participants=sum(number_of_participants)) %>%
+  mutate(percent_proficient = number_proficient/number_of_participants*100)
+
 race3
 
+```
+
+# Joining 2 datasets
+
+```{r}
 
 ```
+
+
 
