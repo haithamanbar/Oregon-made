@@ -100,7 +100,7 @@ race2<- race1 %>%
     number_level_1 = as.numeric(number_level_1),
     percent_level_1 = as.numeric(percent_level_1), 
     participation_rate = as.numeric(participation_rate)
-    ) %>%
+    )
 race2
 view(race2)
 
@@ -118,6 +118,10 @@ race3
 # Joining 2 datasets
 
 ```{r}
+
+
+attend_race <- left_join(attend1, race3, by=c("institution_id"="school_id"), student_group)
+
 
 ```
 
