@@ -45,8 +45,9 @@ attend1 <- attend %>%
           student_group == "Hispanic/Latino" |
           student_group == "Multi-Racial" |
           student_group == "Native Hawaiian/Pacific Islander" |
-          student_group == "Underserved Races/Ethnicities" |
-          student_group == "White")
+          student_group == "White") %>%
+  mutate(student_group=recode(student_group,
+                              "Native Hawaiian/Pacific Islander" = "Pacific Islander"))
 
 
 #Removing rows without data
@@ -118,11 +119,15 @@ race3
 # Joining 2 datasets
 
 ```{r}
+#Check that 2 datasets have matching student groups
+unique(attend1$student_group)
+unique(race3$student_group)
 
+#Join
+attend_race <- left_join(attend1, race3, by=c("district_id"="district_id", "institution_id"="school_id", "student_group"="student_group")) %>%
+  drop_na()
 
-attend_race <- left_join(attend1, race3, by=c("institution_id"="school_id"), student_group)
-
-
+view(attend_race)
 ```
 
 
