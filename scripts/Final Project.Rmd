@@ -131,4 +131,32 @@ view(attend_race)
 ```
 
 
+# Creating a summary table with percentage profficient by type of school
+```{r}
 
+#Pivot wider by student_group to have columns by races:
+prof_by_race <- attend_race %>%
+  group_by(institution_type, student_group) %>% 
+  summarise(number_of_participants = sum(number_of_participants),
+            number_proficient = sum(number_proficient)) %>% 
+  mutate(percent_prof_race = (number_proficient/number_of_participants*100)) %>% 
+  mutate(percent_prof_race = round(percent_prof_race, 2)) %>% 
+ pivot_wider(names_from = "student_group",
+ values_from = "percent_prof_race") %>% 
+  clean_names()
+
+#Doing an additional pivot longer followed by a pivot wider to make the table look good:
+prof_percent_by_type_of_inst <- prof_by_race %>% 
+  select(-number_of_participants, -number_proficient) %>%
+  pivot_longer( cols = 2:7,
+                names_to = "race",
+                values_to = "values") %>% 
+  drop_na() %>% 
+  pivot_wider(names_from = "race",
+  values_from = "values") %>% 
+  clean_names()
+
+view(prof_percent_by_type_of_inst)
+
+
+```
