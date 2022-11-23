@@ -23,8 +23,10 @@ library(knitr)
 
 # Introduction
 We use data from the Oregon Department of Education (ODE) to examine the following research questions:  
-*Does attendance rate affect student proficiency in English, Language, and Arts? and;
-*Does such a relationship vary for different racial and ethnic groups?  
+
+* Does attendance rate affect student proficiency in English, Language, and Arts? and;
+* Does such a relationship vary for different racial and ethnic groups?  
+ 
 We use data of student attendance rate  and student proficiency rate  from the ODE assessment group reports for all the schools in the state. We will base our assessment on the latest academic year available for both data sets, which is 2021 – 2022.
 
 # Methods
@@ -46,6 +48,7 @@ view(attend)
 ```
 
 The first data set is student performance in English Language and Arts (ELA) from all schools in the state. The data set provides the number and percentage of students that are proficient in each of the four levels of ELA proficiency, stratified by school, race and ethnicity, and grade level. This data set has `r nrow(race)` rows and `r ncol(race)` columns.  
+
 The second data set is student attendance data from all the schools in Oregon. This data set provides the number and percentage of regular attenders as well as those of chronically absent students, stratified by school and either race and ethnicity or grade level. This data set has `r nrow(attend)` rows and `r ncol(attend)` columns.  
 
 We clean the two data sets by removing rows with no data and rows with suppressed data, marked as “- -” and “*” respectively in the datasets).
