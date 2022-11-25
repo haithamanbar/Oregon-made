@@ -1,0 +1,11 @@
+ 
+Areas of Strengths
+1. Coding was organized and easy to read
+2. The kable table is a very clear and informative summary of the data.
+3. The second graph looks really good too. It was elegantly done.
+
+Something Learned
+1. Line 223: I learnt about using Tag in plots and the use of Transform() to recode
+
+Improvement
+1. Line 201, 214: There's no need for x= when piping.
