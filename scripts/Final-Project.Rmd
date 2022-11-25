@@ -106,6 +106,7 @@ race1 <- race %>%
           student_group == "White") %>% 
  filter(number_proficient != "*" &
         number_proficient != "--") %>% 
+  ## I have struggled to change variables to numeric. I never knew about Transform(). This is helpful. 
  transform(number_of_participants = as.numeric(number_of_participants)) %>% 
  filter(number_of_participants >= 10)
 race1
@@ -197,7 +198,8 @@ prof_percent_by_type_of_inst %>%
 
 #Adding plot for attendance vs. proficiency
 attend_race %>%
-  ggplot(aes(x=percent_regular_attenders, y=percent_proficient)) +
+  ## No need for [x=, y=] when piping. 
+  ggplot(aes(percent_regular_attenders, percent_proficient)) +
   geom_point() +
   geom_smooth(method='lm') +
   theme_bw() +
@@ -209,7 +211,7 @@ attend_race %>%
 
 #Adding plot for attendance vs. proficiency, faceted by race
 attend_race %>%
-  ggplot(aes(x=percent_regular_attenders, y=percent_proficient,group=student_group)) +
+  ggplot(aes(percent_regular_attenders, percent_proficient,group=student_group)) +
   geom_point() +
   geom_smooth(method='lm') +  
   facet_wrap(~student_group) +
