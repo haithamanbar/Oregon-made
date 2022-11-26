@@ -24,10 +24,10 @@ library(knitr)
 # Introduction
 We use data from the Oregon Department of Education (ODE) to examine the following research questions:  
 
-* Does attendance rate affect student proficiency in English, Language, and Arts? and;
-* Does such a relationship vary for different racial and ethnic groups?  
+(<!-- * Does attendance rate affect student proficiency in English, Language, and Arts? and; -->
+<!-- * Does such a relationship vary for different racial and ethnic groups?   --> (I love your questions! Can you explain what you mean by relationship?)
  
-We use data of student attendance rate  and student proficiency rate  from the ODE assessment group reports for all the schools in the state. We will base our assessment on the latest academic year available for both data sets, which is 2021 – 2022.
+<!-- We use data of student attendance rate  and student proficiency rate  from the ODE assessment group reports for all the schools in the state. We will base our assessment on the latest academic year available for both data sets, which is 2021 – 2022. --> (It is so cool that you can use data from Oregon and from the most recent year. Was there anything on the site discussing how rates from this year compare to pre-pandemic numbers or pandemic numbers?)
 
 # Methods
 In this research, we run a regression model on attendance data and proficiency data of schools in Oregon. We obtain two different data sets from the ODE: attendance rate by school and student group, and proficiency in English, Language, and Arts by student group.  
@@ -51,7 +51,7 @@ The first data set is student performance in English Language and Arts (ELA) fro
 
 The second data set is student attendance data from all the schools in Oregon. This data set provides the number and percentage of regular attenders as well as those of chronically absent students, stratified by school and either race and ethnicity or grade level. This data set has `r nrow(attend)` rows and `r ncol(attend)` columns.  
 
-We clean the two data sets by removing rows with no data and rows with suppressed data, marked as “- -” and “*” respectively in the datasets).
+<!-- We clean the two data sets by removing rows with no data and rows with suppressed data, marked as “- -” and “*” respectively in the datasets). --> (I appreciate how clearly you detail what you are doing and where the data come from. It is easy to understand the process this way. )
 
 ```{r clean_attendance}
 #Summarizing to check the existing student groups in the file
@@ -92,9 +92,9 @@ racesum <- race %>%
   summarise()
 
 
-#Filtering the dataframe leaving only student groups related to race.
-#Filtered again to remove rows without data on proficiency data
-#Transformed number of participants to numeric and the filtered to all >= than 10 students. 
+# Filtering the dataframe leaving only student groups related to race.
+# Filtered again to remove rows without data on proficiency data
+# Transformed number of participants to numeric and the filtered to all >= than 10 students.
 race1 <- race %>% 
    select(-grade_level) %>% 
      filter(student_group == "American Indian/Alaskan Native" |
@@ -111,7 +111,8 @@ race1 <- race %>%
 race1
 
 #Transformed all columns to numbers to be able to compute them. The file had them as characters.
-race2<- race1 %>% 
+#I wonder if there is a better way to transform as this list is long. I do not have an answer, just a thought. 
+race2<- race1 %>%
   transform(
     number_proficient = as.numeric(number_proficient), 
     percent_proficient_level_3_or_4 = as.numeric(percent_proficient_level_3_or_4),
@@ -143,6 +144,7 @@ After cleaning, we merge the two data sets by matching schools’ IDs and studen
 
 ```{r join}
 #Check that 2 datasets have matching student groups
+#Good call to check for matching groups. Would have never thought to use the unique function for this! 
 unique(attend1$student_group)
 unique(race3$student_group)
 
@@ -206,6 +208,7 @@ attend_race %>%
        x="Rate of Regular Attendance (%)",
        y="Percentage of proficient students (%)",
        tag = "Plot 1")
+#I appreciate that the table is right above the graph. When I knit the Rmd, the Plot 1 x -axis numbers for rate of regular attendance were unreadable. I would suggest changing it as the plot is wonderful. 
 
 #Adding plot for attendance vs. proficiency, faceted by race
 attend_race %>%
@@ -219,9 +222,12 @@ attend_race %>%
        x="Rate of Regular Attendance (%)",
        y="Percentage of proficient students (%)",
        tag="Plot 2")
+#unsure if the \n is supposed to be there or if it is supposed to be "in" 
+#Same thing happened from this plot with the x axis. I think you can change it in ggplot! 
+#Appreciated how you faceted this plot! 
 
+#Thank you for detailing out your thought process throughout this script. It made it easy to understand the code and follow along. Makes me want to take this back to my group and redo my work to include this! 
 ```
-
 # Discussions
 
 \newpage
