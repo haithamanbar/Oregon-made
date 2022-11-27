@@ -3,6 +3,7 @@ title: "The Relationship of Student Attendance and Student Proficiency in Englis
 author: "Tram Anh Hoang, Haitham Anbar, Maria Coronado, Erick Njue"
 date: "`r Sys.Date()`"
 output: pdf_document
+bibliography: references.bib 
 ---
 
 ```{r setup, include=FALSE}
