@@ -5,6 +5,8 @@ date: "`r Sys.Date()`"
 output: pdf_document
 bibliography: references.bib 
 ---
+#### Comments from Brittany Spinner 
+In your _YAML_ I didn't know that the code r Sys.Date(), with the tick marks to do inline code, would produce the current date everytime the document is rendered. That is so cool and I will have to do this in the future! 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, results='hide')
@@ -19,6 +21,9 @@ library(knitr)
 
 ```
 
+#### Comment 
+Do you need both {rio} and {readr}? 
+
 
 # Abstract
 
@@ -29,6 +34,9 @@ We use data from the Oregon Department of Education (ODE) to examine the followi
 * Does such a relationship vary for different racial and ethnic groups?  
  
 We use data of student attendance rate  and student proficiency rate  from the ODE assessment group reports for all the schools in the state. We will base our assessment on the latest academic year available for both data sets, which is 2021 – 2022.
+
+#### Comments 
+These are excellent research questions, maybe label them as *RQ1* and *RQ2* (only if you want to) and add hypothesis to each research question. You'll want to provide more details about your sample such as age range, sample size = n, and race and ethnic groups, etc. This can come after the intro in a separate paragraph _Sample_. Good description of the dataset though and where it came from and the year. Maybe list the exact variable names you're looking at as well (?). 
 
 # Methods
 In this research, we run a regression model on attendance data and proficiency data of schools in Oregon. We obtain two different data sets from the ODE: attendance rate by school and student group, and proficiency in English, Language, and Arts by student group.  
@@ -54,6 +62,9 @@ The second data set is student attendance data from all the schools in Oregon. T
 
 We clean the two data sets by removing rows with no data and rows with suppressed data, marked as “- -” and “*” respectively in the datasets).
 
+#### Comments 
+Do the participants from each dataset have the same IDs? Meaning, does the attendance for, lets say, a student with the ID 123 match the ID for that student's performance scores in ELA dataset? In other words, are these the same exact kids that you are comparing attendance and performance with, and do they have matching IDs in each dataset? You'll have to get rid of all students from ELA that don't have attendance data in and vice versa. This is a kind of join, I think _inner_join_? _inner_join_ keeps only the data that matches in both datasets. I think this would be a good option here. Then proceed with filtering etc. below. 
+
 ```{r clean_attendance}
 #Summarizing to check the existing student groups in the file
 attendsum <- attend %>% 
@@ -73,13 +84,16 @@ attend1 <- attend %>%
           student_group == "White") %>%
   mutate(student_group=recode(student_group,
                               "Native Hawaiian/Pacific Islander" = "Pacific Islander"))
+# why did you rename native hawaiin/pacific islander to "pacific islander only"? Not sure I would do this, but if there is a specific reason for doing this, such as it helps with coding etc., I totally get it. 
 
 
 #Removing rows without data
 attend1 <- attend1%>% 
   filter(students_included != "*")
+# this would perhaps be more beneficial if you combined the datasets using {inner_join} and had everything in once place (?). 
     
 # Note: All schools with >95% and <5% regular attenders were eliminated. 
+## Why? Does this skew the data in some way?
 #These rows corresponded with schools where less than 9 students were included. 
 
 dim(attend1)
@@ -150,6 +164,8 @@ unique(race3$student_group)
 #Join
 attend_race <- left_join(attend1, race3, by=c("district_id"="district_id", "institution_id"="school_id", "student_group"="student_group")) %>%
   drop_na()
+## Ok, so you did all the cleaning first and then joined. I wonder if joining first is better? I have no idea though. and should you do inner_join instead of left-join, but I guess if you already got rid of all the missing data then maybe it isn't an issue? 
+
 
 view(attend_race)
 ```
@@ -193,6 +209,9 @@ prof_percent_by_type_of_inst %>%
                     "White"))
 
 ```
+#### Comment 
+What is the difference between school and high school? Does school mean grade school (i.e., K-8) and high school is 9-12th grade? 
+
 
 ```{r plot, results='asis'}
 
@@ -207,6 +226,9 @@ attend_race %>%
        x="Rate of Regular Attendance (%)",
        y="Percentage of proficient students (%)",
        tag = "Plot 1")
+# I wonder why the line for this figure isn't showing up in the graph, we should also see the x-axis scale (?). 
+# I think this y label is wrong. you're not saying the percent of proficient students you're saying the score for proficiency in percent for students correct? 
+# and since you got rid of >95% attendance and <5% attendance your x axis would be 5-95 and not 1-100. which i think it should be. I don't think you should use this constraint on attendance, but I would have to know why you are using it to say you shouldn't. BUT if you are going to keep this filter, I would say why and then make it known in the graph as well on the x axis. 
 
 #Adding plot for attendance vs. proficiency, faceted by race
 attend_race %>%
@@ -214,7 +236,7 @@ attend_race %>%
   geom_point() +
   geom_smooth(method='lm') +  
   facet_wrap(~student_group) +
-  theme_bw() +
+  theme_bw() + # I would do theme_minimal so you can see the lines of the graph. I tried this and the lines still didn't show so I'm not sure why they wont show up, but it would be nice to see the lines on the first graph at least. 
   labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts by Different Races",
        subtitle="Data from Oregon Education Department",
        x="Rate of Regular Attendance (%)",
@@ -222,6 +244,23 @@ attend_race %>%
        tag="Plot 2")
 
 ```
+
+
+
+#### Comment 
+These are super cool graphs! Well done! I think you should have someone run regression model(s) using lm() to see the significance of the slope and intercept. The graph representing the Asian population is interesting because it starts in the middle of the graph and the graph for the pacific islander population ends in the middle of the graph. Very unique! I love this facetwrap! 
+
+#### Comment 
+to run a regression model for the first graph you would use the following code:
+```{r}
+fit <- lm(formula = percent_regular_attenders ~ percent_proficient, data = attend_race)
+summary(fit)
+```
+
+
+#### Comments 
+Congrats! It looks like your results are significant! For every one unit (one percent in this case) increase in attendance, this graph represents a predicted .43% increase in proficiency scores. (I think... I'm not super familiar with these data though and I would review what I've done and cater it to your needs) 
+Great job you guys! 
 
 # Discussions
 
