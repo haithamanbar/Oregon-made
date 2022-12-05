@@ -35,7 +35,7 @@ In this research, we run a regression model on attendance data and proficiency d
 
 ## Data description and preparation
 
-We used [@R] package [@here] to read in the two datasets from Oregon Department of Education (ODE)into the [@R] environment. We use [@janitor] to clean the names. After preparing the datasets, we display them as tables using [@tidyverse].
+We use [@R] package [@here] to read in the two data sets from Oregon Department of Education (ODE)into the [@R] environment. We use [@janitor] to clean the names. After preparing the data sets, we display them as tables using [@tidyverse].
 
 ```{r read_data}
 
@@ -142,7 +142,7 @@ race3
 
 ```
 
-After cleaning, we merge the two data sets by matching schools’ IDs and student race and ethnicity. Rows with attendance data only or proficiency data only will be removed. We used the _left_join_ in the {dplyr} in [@tidyverse]
+After cleaning, we merge the two data sets by matching schools’ IDs and student race and ethnicity. Rows with attendance data only or proficiency data only will be removed. We use the _left_join_ in the {dplyr} and _drop_na_ in{tidyr}, all contained in [@tidyverse]
 
 ```{r join}
 #Check that 2 data sets have matching student groups
@@ -158,6 +158,8 @@ view(attend_race)
 ## Methods
 
 # Results
+
+We use the function _pivot_wider_ by student group in [@tidyverse] package {tidyr} to have columns by race. This is followed by _pivot_longer_ and another _pivot_wider_ to make the table presentable. We use the _kable_ function found in [@Xie2021-ps] to present the results. 
 
 ```{r summary_data, results='markup'}
 
@@ -194,6 +196,8 @@ prof_percent_by_type_of_inst %>%
                     "White"))
 
 ```
+
+To interpret our results, we further present them in a scatter plots using {ggplot2} of [@tidyverse]. In Plot 1, we plot the percentage of proficient students based on the rate of regular attendance. In Plot 2 below, we use _facet_wrap_ function of {ggplot2} plot the rate of regular attendance by percentage of proficient students based on the race.  
 
 ```{r plot, results='asis'}
 
