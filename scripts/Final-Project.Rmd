@@ -26,7 +26,7 @@ library(knitr)
 We use data from the Oregon Department of Education (ODE) to examine the following research questions:  
 
 * Does attendance rate affect student proficiency in English, Language, and Arts? and;
-* Does such a relationship vary for different racial and ethnic groups?  
+* Does such a relationship between attendance and proficiency vary for different racial and ethnic groups?  
  
 We use data of student attendance rate  and student proficiency rate  from the ODE assessment group reports for all the schools in the state. We will base our assessment on the latest academic year available for both data sets, which is 2021 – 2022.
 
@@ -42,12 +42,10 @@ We used [@R] package [@here] to read in the two datasets from Oregon Department 
 race <- import(here("data", "pagr_schools_ela_tot_raceethnicity_2122.csv")) %>% 
   clean_names() %>%
   as_tibble()
-view(race)
 
 attend <- import(here("data", "regularattenders_report_2122.csv")) %>% 
   clean_names() %>%
   as_tibble()
-view(attend)
 ```
 
 The first data set is student performance in English Language and Arts (ELA) from all schools in the state. The data set provides the number and percentage of students that are proficient in each of the four levels of ELA proficiency, stratified by school, race and ethnicity, and grade level. This data set has `r nrow(race)` rows and `r ncol(race)` columns.  
@@ -61,31 +59,32 @@ We clean the two data sets by removing rows with no data and rows with suppresse
 attendsum <- attend %>% 
  group_by(student_group) %>% 
   summarise()
-attendsum
-
 
 #Filtering the dataframe leaving only student groups related to race. 
 attend1 <- attend %>% 
-   filter(student_group == "American Indian/Alaska Native" |
-          student_group == "Asian"|
-          student_group == "Black/African American" |
-          student_group == "Hispanic/Latino" |
-          student_group == "Multi-Racial" |
-          student_group == "Native Hawaiian/Pacific Islander" |
-          student_group == "White") %>%
-  mutate(student_group=recode(student_group,
-                              "Native Hawaiian/Pacific Islander" = "Pacific Islander"))
+   filter(student_group %in% c("White",
+                               "Hispanic/Latino",
+                               "Black/African American", 
+                               "Asian",
+                               "American Indian/Alaska Native",
+                               "Native Hawaiian/Pacific Islander",
+                               "Multi-Racial")) %>%
+  mutate(student_group=recode(student_group,"Native Hawaiian/Pacific Islander" = "Pacific Islander"))
 
 
 #Removing rows without data
+#Mutate attendance data to be numeric
 attend1 <- attend1%>% 
-  filter(students_included != "*")
+  filter(students_included != "*") %>%
+  mutate(students_included=as.numeric(students_included),
+         number_regular_attenders=as.numeric(number_regular_attenders),
+         percent_regular_attenders=as.numeric(percent_regular_attenders),
+         number_chronically_absent=as.numeric(number_chronically_absent),
+         percent_chronically_absent=as.numeric(percent_chronically_absent))
     
 # Note: All schools with >95% and <5% regular attenders were eliminated. 
 #These rows corresponded with schools where less than 9 students were included. 
 
-dim(attend1)
-view(attend1)
 ```
 
 ```{r clean_profifiency}
@@ -93,7 +92,6 @@ view(attend1)
 racesum <- race %>% 
  group_by(student_group) %>% 
   summarise()
-
 
 #Filtering the dataframe leaving only student groups related to race.
 #Filtered again to remove rows without data on proficiency data
@@ -111,7 +109,6 @@ race1 <- race %>%
         number_proficient != "--") %>% 
  transform(number_of_participants = as.numeric(number_of_participants)) %>% 
  filter(number_of_participants >= 10)
-race1
 
 #Transformed all columns to numbers to be able to compute them. The file had them as characters.
 race2<- race1 %>% 
@@ -128,8 +125,6 @@ race2<- race1 %>%
     percent_level_1 = as.numeric(percent_level_1), 
     participation_rate = as.numeric(participation_rate)
     )
-race2
-view(race2)
 
 #Grouped data by school_id and student_group, summed the number of participants and number of proficient students, and re-calculate the percentage of proficient students.
 race3 <- race2 %>% 
@@ -138,7 +133,6 @@ race3 <- race2 %>%
            number_of_participants=sum(number_of_participants)) %>%
   mutate(percent_proficient = number_proficient/number_of_participants*100)
 
-race3
 
 ```
 
@@ -153,10 +147,10 @@ unique(race3$student_group)
 attend_race <- left_join(attend1, race3, by=c("district_id"="district_id", "institution_id"="school_id", "student_group"="student_group")) %>%
   drop_na()
 
-view(attend_race)
 ```
 ## Methods
-
+Research question, hypothesis
+Details about sample: sample size =n, race and ethnic group
 
 # Results
 
@@ -202,7 +196,7 @@ prof_percent_by_type_of_inst %>%
 attend_race %>%
   ggplot(aes(x=percent_regular_attenders, y=percent_proficient)) +
   geom_point() +
-  geom_smooth(method='lm') +
+  geom_smooth(method='lm', color="violet") +
   theme_bw() +
   labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts",
        subtitle="Data from Oregon Education Department",
@@ -214,7 +208,7 @@ attend_race %>%
 attend_race %>%
   ggplot(aes(x=percent_regular_attenders, y=percent_proficient,group=student_group)) +
   geom_point() +
-  geom_smooth(method='lm') +  
+  geom_smooth(method='lm', color="violet") +  
   facet_wrap(~student_group) +
   theme_bw() +
   labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts by Different Races",
