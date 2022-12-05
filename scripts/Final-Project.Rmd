@@ -54,7 +54,7 @@ The first data set is student performance in English Language and Arts (ELA) fro
 
 The second data set is student attendance data from all the schools in Oregon. This data set provides the number and percentage of regular attenders as well as those of chronically absent students, stratified by school and either race and ethnicity or grade level. This data set has `r nrow(attend)` rows and `r ncol(attend)` columns.  
 
-We clean the two data sets by removing rows with no data and rows with suppressed data, marked as “- -” and “*” respectively in the datasets
+We clean the two data sets by removing rows with no data and rows with suppressed data, marked as “- -” and “*” respectively. We use {dplyr} package functions in [@tidyverse] to do so. 
 
 ```{r clean_attendance}
 #Summarizing to check the existing student groups in the file
@@ -142,10 +142,10 @@ race3
 
 ```
 
-After cleaning, we merge the two data sets by matching schools’ IDs and student race and ethnicity. Rows with attendance data only or proficiency data only will be removed.  
+After cleaning, we merge the two data sets by matching schools’ IDs and student race and ethnicity. Rows with attendance data only or proficiency data only will be removed. We used the _left_join_ in the {dplyr} in [@tidyverse]
 
 ```{r join}
-#Check that 2 datasets have matching student groups
+#Check that 2 data sets have matching student groups
 unique(attend1$student_group)
 unique(race3$student_group)
 
