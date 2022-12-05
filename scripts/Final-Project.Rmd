@@ -31,9 +31,11 @@ We use data from the Oregon Department of Education (ODE) to examine the followi
 We use data of student attendance rate  and student proficiency rate  from the ODE assessment group reports for all the schools in the state. We will base our assessment on the latest academic year available for both data sets, which is 2021 – 2022.
 
 # Methods
-In this research, we run a regression model on attendance data and proficiency data of schools in Oregon. We obtain two different data sets from the ODE: attendance rate by school and student group, and proficiency in English, Language, and Arts by student group.  
+In this research, we run a regression model on attendance data and proficiency data of schools in Oregon. We obtain two different data sets from the ODE: attendance rate by school and student group, and proficiency in English, Language, and Arts by student group. 
 
 ## Data description and preparation
+
+We used [@R] package [@here] to read in the two datasets from Oregon Department of Education (ODE)into the [@R] environment. We use [@janitor] to clean the names. After preparing the datasets, we display them as tables using [@tidyverse].
 
 ```{r read_data}
 
@@ -52,7 +54,7 @@ The first data set is student performance in English Language and Arts (ELA) fro
 
 The second data set is student attendance data from all the schools in Oregon. This data set provides the number and percentage of regular attenders as well as those of chronically absent students, stratified by school and either race and ethnicity or grade level. This data set has `r nrow(attend)` rows and `r ncol(attend)` columns.  
 
-We clean the two data sets by removing rows with no data and rows with suppressed data, marked as “- -” and “*” respectively in the datasets).
+We clean the two data sets by removing rows with no data and rows with suppressed data, marked as “- -” and “*” respectively in the datasets
 
 ```{r clean_attendance}
 #Summarizing to check the existing student groups in the file
@@ -227,3 +229,5 @@ attend_race %>%
 
 \newpage
 # References
+
+
