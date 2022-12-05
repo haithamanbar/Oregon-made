@@ -149,8 +149,25 @@ attend_race <- left_join(attend1, race3, by=c("district_id"="district_id", "inst
 
 ```
 ## Methods
+
 Research question, hypothesis
 Details about sample: sample size =n, race and ethnic group
+
+Our paper looks at two research questions:  
+1. Does attendance rate affect student proficiency in English, Language, and Arts?; and 
+2. Does such a relationship between attendance and proficiency vary for different racial and ethnic groups?  
+
+Our data sets obtained from the Oregon Department of Education is school-level data, broken down by racial and ethnic groups. While the relationship between attendance and student proficiency would be better explained from student-level data, we were not able to obtain data in such format.  
+
+### RQ1: Does attendance rate affect student proficiency in English, Language, and Arts?  
+
+Our hypothesis is that schools with higher student attendance have higher rate of student proficiency in English, Language, and Arts.  
+
+To answer the first research question, we run a linear regression model, using schools' proficiency rate as the dependent variable, and attendance rate as the independent variable. Our regression equation is: percent_proficient = a + b*percent_regular_attenders + e
+
+### RQ2: Does such a relationship between attendance and proficiency vary for different racial and ethnic groups?  
+Once our hypothesis for the first research question is confirmed, we would like to look at whether students' racial and ethnic backgrounds had implications on the effect of attendance on student proficiency. In other words, if students have different racial and ethnic backgrounds, would attendance improve proficiency in the same way. Our hypothesis is that schools will see different impacts of attendance on proficiency for different student groups.  
+
 
 # Results
 
@@ -273,6 +290,13 @@ view(mixed_table)
 
 #Adding plot for attendance vs. proficiency
 attend_race %>%
+  group_by(institution_id) %>%
+  summarize(students_included = sum(students_included),
+            number_regular_attenders = sum(number_regular_attenders),
+            percent_regular_attenders = number_regular_attenders/students_included *100,
+            number_proficient = sum(number_proficient),
+            number_of_participants = sum(number_of_participants),
+            percent_proficient = number_proficient/number_of_participants *100) %>%
   ggplot(aes(x=percent_regular_attenders, y=percent_proficient)) +
   geom_point() +
   geom_smooth(method='lm', color="violet") +
@@ -306,6 +330,15 @@ summary(attpro)
 The estimated y-intercept is 46.57 which tells us the predicted value of proficiency when school attendance is zero.
 
 # Discussions
+
+## Regression and Plot 1
+When looking at school-level data, attendance rate and proficiency rate has a positive relationship. Schools with 1% higher attendance rate saw a x% increase in their percentage of proficient students. Our linear model explains ...% of the data point, with the standard error of...
+
+## Regression and Plot 2
+When faceted by students' racial and ethnic groups, we can see a clear change in the slope of the line. Using White students as the reference group, the Asian group has a steeper slope, suggesting 1% increase in attendance rate results in a higher increase in the rate of proficiency for the Asian group than for the White group. Whereas, the Black/African American group, the Hispanic/Latino group, and the Pacific Islander group had flatter line, suggesting that the positive impact of attendance rate on proficiency rate is weaker for these groups than for their White counterparts.  
+
+Interestingly, all the data points for the Asian group show up after in the far right part of their plot, indicating high attendance rate for this group of students - above 60% in all the schools we looked at. Contradictingly, the Pacific Islander group had low attendance - below 70% across all schools.
+
 
 \newpage
 # References
