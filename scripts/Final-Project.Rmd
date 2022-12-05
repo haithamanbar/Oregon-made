@@ -195,7 +195,7 @@ prof_percent_by_type_of_inst %>%
 
 ```
 
-```{r attendance-table}
+```{r attendance-table, results='markup'}
 #Transforming relevant columns into integrer
 attend_race <- attend_race %>%
   transform(
@@ -219,13 +219,24 @@ absent_by_race_table <- attend_by_race  %>%
   pivot_wider(
     names_from = "student_group",
     values_from = "percent_chron_absent") %>% 
-  clean_names()
+  clean_names() 
+
+
+absent_by_race_table %>%
+  kable(caption="Attendance by race",
+        col.names=c("Institution type",
+                    "Asian", 
+                    "Black African American", 
+                    "Hispanic/Latino",
+                    "Multi racial",
+                    "Pacific Islander",
+                    "White"))
   
-view(absent_by_race_table)
+
 
 ```
 
-```{r summary-table}
+```{r summary-table, results='markup'}
 #Summary attendance grouped by race (not by institutions)
 attend_summary <- attend_race %>%
     group_by(student_group) %>% 
@@ -268,9 +279,24 @@ prof_summary <- attend_race %>%
 
 
 mixed_table <- left_join(attend_summary, prof_summary)
-    
-view(mixed_table)
 
+mixed_table <- mixed_table %>% 
+  mutate(race = recode(race, 
+                       asian = "Asian",
+                       hispanic_latino = "Hispanic/latino",
+                       black_african_american = "Black African American",
+                       multi_racial = "Multi Racial",
+                       pacific_islander = "Pacific Islander",
+                       white = "White"
+                       ))
+
+mixed_table %>% 
+  kable(caption="Summary table",
+        col.names=c("Race/ ethnicity",
+                    "Percent Chronically absent", 
+                    "Percent proficient"))
+
+    
 ```
 
 
