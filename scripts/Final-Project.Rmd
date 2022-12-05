@@ -31,9 +31,11 @@ We use data from the Oregon Department of Education (ODE) to examine the followi
 We use data of student attendance rate  and student proficiency rate  from the ODE assessment group reports for all the schools in the state. We will base our assessment on the latest academic year available for both data sets, which is 2021 – 2022.
 
 # Methods
-In this research, we run a regression model on attendance data and proficiency data of schools in Oregon. We obtain two different data sets from the ODE: attendance rate by school and student group, and proficiency in English, Language, and Arts by student group.  
+In this research, we run a regression model on attendance data and proficiency data of schools in Oregon. We obtain two different data sets from the ODE: attendance rate by school and student group, and proficiency in English, Language, and Arts by student group. 
 
 ## Data description and preparation
+
+We used [@R] package [@here] to read in the two datasets from Oregon Department of Education (ODE)into the [@R] environment. We use [@janitor] to clean the names. After preparing the datasets, we display them as tables using [@tidyverse].
 
 ```{r read_data}
 
@@ -52,7 +54,7 @@ The first data set is student performance in English Language and Arts (ELA) fro
 
 The second data set is student attendance data from all the schools in Oregon. This data set provides the number and percentage of regular attenders as well as those of chronically absent students, stratified by school and either race and ethnicity or grade level. This data set has `r nrow(attend)` rows and `r ncol(attend)` columns.  
 
-We clean the two data sets by removing rows with no data and rows with suppressed data, marked as “- -” and “*” respectively in the datasets).
+We clean the two data sets by removing rows with no data and rows with suppressed data, marked as “- -” and “*” respectively. We use {dplyr} package functions in [@tidyverse] to do so. 
 
 ```{r clean_attendance}
 #Summarizing to check the existing student groups in the file
@@ -140,7 +142,7 @@ race3
 
 ```
 
-After cleaning, we merge the two data sets by matching schools’ IDs and student race and ethnicity. Rows with attendance data only or proficiency data only will be removed.  
+After cleaning, we merge the two data sets by matching schools’ IDs and student race and ethnicity. Rows with attendance data only or proficiency data only will be removed. We used the _left_join_ in the {dplyr} in [@tidyverse]
 
 ```{r join}
 #Check that 2 data sets have matching student groups
@@ -154,7 +156,6 @@ attend_race <- left_join(attend1, race3, by=c("district_id"="district_id", "inst
 view(attend_race)
 ```
 ## Methods
-
 
 # Results
 
@@ -302,7 +303,16 @@ attend_race %>%
 
 ```
 
+```{r regression}
+attpro <- lm(formula = percent_regular_attenders~percent_proficient  , data = attend_race)
+summary(attpro)
+```
+
+The estimated y-intercept is 46.57 which tells us the predicted value of proficiency when school attendance is zero.
+
 # Discussions
 
 \newpage
 # References
+
+
