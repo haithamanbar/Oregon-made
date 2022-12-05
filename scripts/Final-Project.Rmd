@@ -157,7 +157,6 @@ view(attend_race)
 ```
 ## Methods
 
-
 # Results
 
 ```{r summary_data, results='markup'}
@@ -224,6 +223,13 @@ attend_race %>%
        tag="Plot 2")
 
 ```
+
+```{r regression}
+attpro <- lm(formula = percent_regular_attenders~percent_proficient  , data = attend_race)
+summary(attpro)
+```
+
+The estimated y-intercept is 46.57 which tells us the predicted value of proficiency when school attendance is zero.
 
 # Discussions
 
