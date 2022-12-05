@@ -190,6 +190,85 @@ prof_percent_by_type_of_inst %>%
 
 ```
 
+```{r attendance-table}
+#Transforming relevant columns into integrer
+attend_race <- attend_race %>%
+  transform(
+    students_included = as.integer(students_included), 
+    number_regular_attenders = as.integer(number_regular_attenders), 
+    number_chronically_absent = as.integer(number_chronically_absent)) 
+
+#General table for attendance by race
+attend_by_race <- attend_race %>%
+    group_by(institution_type, student_group) %>% 
+    summarise(students_included = sum(students_included),
+            number_regular_attenders = sum(number_regular_attenders),
+            number_chronically_absent = sum(number_chronically_absent)) %>% 
+  mutate(percent_regular_attenders = (number_regular_attenders / students_included * 100)) %>% 
+  mutate(percent_regular_attenders = round(percent_regular_attenders, 2)) %>% 
+  mutate(percent_chron_absent = (number_chronically_absent / students_included * 100)) %>% 
+  mutate(percent_chron_absent = round(percent_chron_absent, 2)) 
+
+absent_by_race_table <- attend_by_race  %>%
+  select(-number_chronically_absent, -number_regular_attenders, -students_included, -percent_regular_attenders) %>% 
+  pivot_wider(
+    names_from = "student_group",
+    values_from = "percent_chron_absent") %>% 
+  clean_names()
+  
+view(absent_by_race_table)
+
+```
+
+```{r summary-table}
+#Summary attendance grouped by race (not by institutions)
+attend_summary <- attend_race %>%
+    group_by(student_group) %>% 
+    summarise(students_included = sum(students_included),
+            number_regular_attenders = sum(number_regular_attenders),
+            number_chronically_absent = sum(number_chronically_absent)) %>% 
+  mutate(percent_regular_attenders = (number_regular_attenders / students_included * 100)) %>% 
+  mutate(percent_regular_attenders = round(percent_regular_attenders, 2)) %>% 
+  mutate(percent_chron_absent = (number_chronically_absent / students_included * 100)) %>% 
+  mutate(percent_chron_absent = round(percent_chron_absent, 2)) 
+
+attend_summary <- attend_summary  %>%
+  select(-number_chronically_absent, -number_regular_attenders, -students_included, -percent_regular_attenders) %>% 
+  pivot_wider(
+    names_from = "student_group",
+    values_from = "percent_chron_absent") %>% 
+  clean_names() %>% 
+pivot_longer(
+  cols = 1:6,
+  names_to = "race",
+  values_to = "percent_chron_absent") 
+  
+
+
+#Summary proficiency by race (not by institutions)
+prof_summary <- attend_race %>%
+  group_by(student_group) %>% 
+  summarise(number_of_participants = sum(number_of_participants),
+            number_proficient = sum(number_proficient)) %>% 
+  mutate(percent_prof_race = (number_proficient/number_of_participants*100)) %>% 
+  mutate(percent_prof_race = round(percent_prof_race, 2)) %>% 
+  select(-number_of_participants, -number_proficient) %>% 
+ pivot_wider(names_from = "student_group",
+ values_from = "percent_prof_race") %>% 
+  clean_names() %>% 
+  pivot_longer(
+      cols = 1:6,
+  names_to = "race",
+  values_to = "percent_proficient") 
+
+
+mixed_table <- left_join(attend_summary, prof_summary)
+    
+view(mixed_table)
+
+```
+
+
 ```{r plot, results='asis'}
 
 #Adding plot for attendance vs. proficiency
@@ -218,6 +297,13 @@ attend_race %>%
        tag="Plot 2")
 
 ```
+
+```{r regression}
+attpro <- lm(formula = percent_regular_attenders~percent_proficient  , data = attend_race)
+summary(attpro)
+```
+
+The estimated y-intercept is 46.57 which tells us the predicted value of proficiency when school attendance is zero.
 
 # Discussions
 
