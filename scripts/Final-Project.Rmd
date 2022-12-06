@@ -16,6 +16,7 @@ library(readr)
 library(janitor)
 library(tidyverse)
 library(knitr)
+library(modelsummary)
 
 ```
 
@@ -266,6 +267,7 @@ anova(attpro)
 
 A simple regression analysis was run to examine the relationship between the percentage of regular attenders and the percentage of proficient students in Oregon schools. A total of `r school_num` Oregon schools with existing data were included in the sample.
 
+_Predicted percentage of proficient students = 46.5 + 0.423 (percentage of regular attendance)_
 The results indicated that the percent of regular attendance could statistically significantly predict the percent of proficient students B1=0.75, SE(B1)=0.02, t(2237)=32.5, p<.0001. The results explained that regular attendance accounted for 32% of the explained variability in the percent of proficient students, F (1, 2237) = 1056, p < .0001. The regression equation was: 
 
 
@@ -299,9 +301,16 @@ attend_race %>%
 
 ```
 
+#Summary regression model
 To interpret our results, we created scatter plots using {ggplot2} of [@tidyverse]. In Plot 1, we plotted the percentage of proficient students based on the rate of regular attendance. In Plot 2 below, we used _facet_wrap_ function of {ggplot2} plot the rate of regular attendance by percentage of proficient students based on the race. To answer the second research question, we only included a visual representation of the data, but we didn't fit a regression model. Therefore, we evaluated the data only through a visual assessment. 
 
+```{r}
 
+modelsummary(attpro, stars=T,
+             gof_omit = "Adj.|AIC|BIC|RMSE",
+             coef_rename = c("percent_proficient" = "Student proficiency in ELA"),
+             notes = c("Notes: Cells represent coefficients and standard errors in parentheses."),
+             output = "~/Desktop/Oregon-made/scripts/table1.docx")
 # Not include
 ```{r}
 plot3 <- attend_race %>%
@@ -315,6 +324,34 @@ plot3 <- attend_race %>%
   coord_flip()
 plot3
 ```
+
+```
+
+The relationship as estimated by ordinary-least-squares regression has a slope of 0.426  and a p-value of 0.013 making us to fail to reject the null hypothesis that there is no relationship between student school attendance and proficiency rate in ELA on average in the population . 
+
+#Statistical assumptions
+
+```{r}
+attpro_residuals<-residuals(attpro)
+summary(attpro_residuals)
+sd(attpro_residuals)
+```
+
+```{r}
+attpro$predict <- predict(attpro)
+attpro$resid <- residuals(attpro)
+
+summary(attpro$resid)
+sd(attpro$resid)
+
+boxplot(resid(attpro))
+
+hist(attpro_residuals)
+
+```
+
+From the analysis of the residuals as fitted in the model, it shows that the regression assumptions have been reasonably met hence appropriately characterizing student school attendance to proficiency rate in ELA. Our residuals are symmetrically distributed around 0.
+
 
 # Not include
 ```{r}
