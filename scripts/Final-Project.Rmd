@@ -317,30 +317,6 @@ modelsummary(attpro, stars=T,
 
 The relationship as estimated by ordinary-least-squares regression has a slope of 0.753. 
 
-#Statistical assumptions
-
-```{r}
-attpro_residuals<-residuals(attpro)
-summary(attpro_residuals)
-sd(attpro_residuals)
-```
-
-```{r}
-attpro$predict <- predict(attpro)
-attpro$resid <- residuals(attpro)
-
-summary(attpro$resid)
-sd(attpro$resid)
-
-boxplot(resid(attpro))
-
-hist(attpro_residuals)
-
-```
-
-From the analysis of the residuals as fitted in the model, it shows that the regression assumptions have been reasonably met hence appropriately characterizing student school attendance to proficiency rate in ELA. Our residuals are symmetrically distributed around 0.
-
-
 
 ```{r plot2}
 
