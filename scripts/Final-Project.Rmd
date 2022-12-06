@@ -268,7 +268,7 @@ anova(attpro)
 
 A simple regression analysis was run to examine the relationship between the percentage of regular attenders and the percentage of proficient students in Oregon schools. A total of `r school_num` Oregon schools with existing data were included in the sample.
 
-_Predicted percentage of proficient students = 46.5 + 0.423 (percentage of regular attendance)_
+_Predicted percentage of proficient students = -6.09 + 0.75 (percentage of regular attendance)_
 The results indicated that the percent of regular attendance could statistically significantly predict the percent of proficient students B1=0.75, SE(B1)=0.02, t(2237)=32.5, p<.0001. The results explained that regular attendance accounted for 32% of the explained variability in the percent of proficient students, F (1, 2237) = 1056, p < .0001. The regression equation was: 
 
 
@@ -298,7 +298,7 @@ attend_race %>%
        subtitle="Data from Oregon Education Department",
        x="Rate of Regular Attendance (%)",
        y="Percentage of proficient students (%)",
-       tag = "Plot 1")
+       tag = "Figure 1.")
 
 ```
 
@@ -317,6 +317,33 @@ modelsummary(attpro, stars=T,
 
 The relationship as estimated by ordinary-least-squares regression has a slope of 0.753. 
 
+```{r}
+plot4 <- attend_race %>%
+    ggplot(aes(x = student_group, y = percent_proficient)) +
+   geom_boxplot(fill = "skyblue", alpha = 0.5) +
+  theme_bw() +
+  labs(title="Percent proficient by race",
+       x="Race",
+       y="Percent proficient (%)",
+       tag="Figure 2.") +
+  coord_flip()
+plot4
+
+
+
+plot3 <- attend_race %>%
+    ggplot(aes(x = student_group, y = percent_regular_attenders)) +
+   geom_boxplot(fill = "skyblue", alpha = 0.5) +
+  theme_bw() +
+  labs(title="Percent regular attendance by race",
+       x="Race",
+       y="Percent regular attendance (%)",
+       tag="Figure 3.") +
+  coord_flip()
+plot3
+
+```
+
 
 ```{r plot2}
 
@@ -331,40 +358,13 @@ attend_race %>%
        subtitle="Data from Oregon Education Department",
        x="Rate of Regular Attendance (%)",
        y="Percentage of proficient students (%)",
-       tag="Plot 2") 
+       tag="Figure 4.") 
 
 ```
 
 
 # Not include
-```{r}
-plot4 <- attend_race %>%
-    ggplot(aes(x = student_group, y = percent_proficient)) +
-   geom_boxplot(fill = "skyblue", alpha = 0.5) +
-  theme_bw() +
-  labs(title="Percent proficient by race",
-       x="Race",
-       y="Percent proficient (%)",
-       tag="Plot 4") +
-  coord_flip()
-plot4
-```
 
-
-# Not include
-```{r}
-
-plot3 <- attend_race %>%
-    ggplot(aes(x = student_group, y = percent_regular_attenders)) +
-   geom_boxplot(fill = "skyblue", alpha = 0.5) +
-  theme_bw() +
-  labs(title="Percent regular attendance by race",
-       x="Race",
-       y="Percent regular attendance (%)",
-       tag="Plot 4") +
-  coord_flip()
-plot3
-```
 
 
 # Discussion
