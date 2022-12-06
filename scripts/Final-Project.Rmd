@@ -315,7 +315,7 @@ modelsummary(attpro, stars=T,
 
 ```
 
-The relationship as estimated by ordinary-least-squares regression has a slope of 0.426  and a p-value of 0.013 making us to fail to reject the null hypothesis that there is no relationship between student school attendance and proficiency rate in ELA on average in the population . 
+The relationship as estimated by ordinary-least-squares regression has a slope of 0.753. 
 
 #Statistical assumptions
 
