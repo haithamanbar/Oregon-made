@@ -154,7 +154,7 @@ Research question, hypothesis
 Details about sample: sample size =n, race and ethnic group
 
 Our paper looks at two research questions:  
-1. Does attendance rate affect student proficiency in English, Language, and Arts?; and 
+1. Does attendance rate affect student proficiency in English, Language, and Arts?; and  
 2. Does such a relationship between attendance and proficiency vary for different racial and ethnic groups?  
 
 Our data sets obtained from the Oregon Department of Education is school-level data, broken down by racial and ethnic groups. While the relationship between attendance and student proficiency would be better explained from student-level data, we were not able to obtain data in such format.  
