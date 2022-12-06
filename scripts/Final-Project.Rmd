@@ -106,9 +106,9 @@ race1 <- race %>%
           student_group == "Pacific Islander" |
           student_group == "White") %>% 
  filter(number_proficient != "*" &
-        number_proficient != "--") %>% 
- transform(number_of_participants = as.numeric(number_of_participants)) %>% 
- filter(number_of_participants >= 10)
+        number_proficient != "--" &
+        number_of_participants != "-") %>%
+ transform(number_of_participants = as.numeric(number_of_participants))
 
 #Transformed all columns to numbers to be able to compute them. The file had them as characters.
 race2<- race1 %>% 
@@ -175,7 +175,7 @@ We use the function _pivot_wider_ by student group in [@tidyverse] package {tidy
 
 To interpret our results, we further present them in a scatter plots using {ggplot2} of [@tidyverse]. In Plot 1, we plot the percentage of proficient students based on the rate of regular attendance. In Plot 2 below, we use _facet_wrap_ function of {ggplot2} plot the rate of regular attendance by percentage of proficient students based on the race.  
 
-```{r plot, results='asis'}
+```{r plot1, results='asis'}
 
 #Adding plot for attendance vs. proficiency
 attend_race %>%
@@ -196,20 +196,18 @@ attend_race %>%
        y="Percentage of proficient students (%)",
        tag = "Plot 1")
 
-#Adding plot for attendance vs. proficiency, faceted by race
-attend_race %>%
-  ggplot(aes(x=percent_regular_attenders, y=percent_proficient,group=student_group)) +
-  geom_point() +
-  geom_smooth(method='lm', color="violet") +  
-  facet_wrap(~student_group) +
-  theme_bw() +
-  labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts by Different Races",
-       subtitle="Data from Oregon Education Department",
-       x="Rate of Regular Attendance (%)",
-       y="Percentage of proficient students (%)",
-       tag="Plot 2")
-
 ```
+
+Doing regression
+
+```{r regression}
+attpro <- lm(formula = percent_regular_attenders~percent_proficient  , data = attend_race)
+summary(attpro)
+```
+
+The estimated y-intercept is 46.57 which tells us the predicted value of proficiency when school attendance is zero.
+
+Summary table
 
 ```{r summary-table, results='markup'}
 
@@ -283,12 +281,28 @@ mixed_table %>%
     
 ```
 
-```{r regression}
-attpro <- lm(formula = percent_regular_attenders~percent_proficient  , data = attend_race)
-summary(attpro)
+```{r plot2}
+
+#Adding plot for attendance vs. proficiency, faceted by race
+attend_race %>%
+  ggplot(aes(x=percent_regular_attenders, y=percent_proficient,group=student_group)) +
+  geom_point() +
+  geom_smooth(method='lm', color="violet") +  
+  facet_wrap(~student_group) +
+  theme_bw() +
+  labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts by Different Races",
+       subtitle="Data from Oregon Education Department",
+       x="Rate of Regular Attendance (%)",
+       y="Percentage of proficient students (%)",
+       tag="Plot 2")
+
 ```
 
-The estimated y-intercept is 46.57 which tells us the predicted value of proficiency when school attendance is zero.
+
+
+
+
+
 
 # Discussions
 
