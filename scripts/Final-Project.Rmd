@@ -173,43 +173,46 @@ Once our hypothesis for the first research question is confirmed, we would like 
 
 We use the function _pivot_wider_ by student group in [@tidyverse] package {tidyr} to have columns by race. This is followed by _pivot_longer_ and another _pivot_wider_ to make the table presentable. We use the _kable_ function found in [@Xie2021-ps] to present the results. 
 
-```{r summary_data, results='markup'}
+To interpret our results, we further present them in a scatter plots using {ggplot2} of [@tidyverse]. In Plot 1, we plot the percentage of proficient students based on the rate of regular attendance. In Plot 2 below, we use _facet_wrap_ function of {ggplot2} plot the rate of regular attendance by percentage of proficient students based on the race.  
 
-#Pivot wider by student_group to have columns by races:
-prof_by_race <- attend_race %>%
-  group_by(institution_type, student_group) %>% 
-  summarise(number_of_participants = sum(number_of_participants),
-            number_proficient = sum(number_proficient)) %>% 
-  mutate(percent_prof_race = (number_proficient/number_of_participants*100)) %>% 
-  mutate(percent_prof_race = round(percent_prof_race, 2)) %>% 
- pivot_wider(names_from = "student_group",
- values_from = "percent_prof_race") %>% 
-  clean_names()
+```{r plot, results='asis'}
 
-#Doing an additional pivot longer followed by a pivot wider to make the table look good:
-prof_percent_by_type_of_inst <- prof_by_race %>% 
-  select(-number_of_participants, -number_proficient) %>%
-  pivot_longer( cols = 2:7,
-                names_to = "race",
-                values_to = "values") %>% 
-  drop_na() %>% 
-  pivot_wider(names_from = "race",
-  values_from = "values") %>% 
-  clean_names()
+#Adding plot for attendance vs. proficiency
+attend_race %>%
+  group_by(institution_id) %>%
+  summarize(students_included = sum(students_included),
+            number_regular_attenders = sum(number_regular_attenders),
+            percent_regular_attenders = number_regular_attenders/students_included *100,
+            number_proficient = sum(number_proficient),
+            number_of_participants = sum(number_of_participants),
+            percent_proficient = number_proficient/number_of_participants *100) %>%
+  ggplot(aes(x=percent_regular_attenders, y=percent_proficient)) +
+  geom_point() +
+  geom_smooth(method='lm', color="violet") +
+  theme_bw() +
+  labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts",
+       subtitle="Data from Oregon Education Department",
+       x="Rate of Regular Attendance (%)",
+       y="Percentage of proficient students (%)",
+       tag = "Plot 1")
 
-prof_percent_by_type_of_inst %>%
-  kable(caption="Student Proficiency Rate by Race and Institution types",
-        col.names=c("Institution type",
-                    "Asian", 
-                    "Black African American", 
-                    "Hispanic/Latino",
-                    "Multi racial",
-                    "Pacific Islander",
-                    "White"))
+#Adding plot for attendance vs. proficiency, faceted by race
+attend_race %>%
+  ggplot(aes(x=percent_regular_attenders, y=percent_proficient,group=student_group)) +
+  geom_point() +
+  geom_smooth(method='lm', color="violet") +  
+  facet_wrap(~student_group) +
+  theme_bw() +
+  labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts by Different Races",
+       subtitle="Data from Oregon Education Department",
+       x="Rate of Regular Attendance (%)",
+       y="Percentage of proficient students (%)",
+       tag="Plot 2")
 
 ```
 
-```{r attendance-table, results='markup'}
+```{r summary-table, results='markup'}
+
 #Transforming relevant columns into integrer
 attend_race <- attend_race %>%
   transform(
@@ -217,40 +220,7 @@ attend_race <- attend_race %>%
     number_regular_attenders = as.integer(number_regular_attenders), 
     number_chronically_absent = as.integer(number_chronically_absent)) 
 
-#General table for attendance by race
-attend_by_race <- attend_race %>%
-    group_by(institution_type, student_group) %>% 
-    summarise(students_included = sum(students_included),
-            number_regular_attenders = sum(number_regular_attenders),
-            number_chronically_absent = sum(number_chronically_absent)) %>% 
-  mutate(percent_regular_attenders = (number_regular_attenders / students_included * 100)) %>% 
-  mutate(percent_regular_attenders = round(percent_regular_attenders, 2)) %>% 
-  mutate(percent_chron_absent = (number_chronically_absent / students_included * 100)) %>% 
-  mutate(percent_chron_absent = round(percent_chron_absent, 2)) 
 
-absent_by_race_table <- attend_by_race  %>%
-  select(-number_chronically_absent, -number_regular_attenders, -students_included, -percent_regular_attenders) %>% 
-  pivot_wider(
-    names_from = "student_group",
-    values_from = "percent_chron_absent") %>% 
-  clean_names() 
-
-
-absent_by_race_table %>%
-  kable(caption="Attendance by race",
-        col.names=c("Institution type",
-                    "Asian", 
-                    "Black African American", 
-                    "Hispanic/Latino",
-                    "Multi racial",
-                    "Pacific Islander",
-                    "White"))
-  
-
-
-```
-
-```{r summary-table, results='markup'}
 #Summary attendance grouped by race (not by institutions)
 attend_summary <- attend_race %>%
     group_by(student_group) %>% 
@@ -311,46 +281,6 @@ mixed_table %>%
                     "Percent proficient"))
 
     
-```
-
-
-
-To interpret our results, we further present them in a scatter plots using {ggplot2} of [@tidyverse]. In Plot 1, we plot the percentage of proficient students based on the rate of regular attendance. In Plot 2 below, we use _facet_wrap_ function of {ggplot2} plot the rate of regular attendance by percentage of proficient students based on the race.  
-
-```{r plot, results='asis'}
-
-#Adding plot for attendance vs. proficiency
-attend_race %>%
-  group_by(institution_id) %>%
-  summarize(students_included = sum(students_included),
-            number_regular_attenders = sum(number_regular_attenders),
-            percent_regular_attenders = number_regular_attenders/students_included *100,
-            number_proficient = sum(number_proficient),
-            number_of_participants = sum(number_of_participants),
-            percent_proficient = number_proficient/number_of_participants *100) %>%
-  ggplot(aes(x=percent_regular_attenders, y=percent_proficient)) +
-  geom_point() +
-  geom_smooth(method='lm', color="violet") +
-  theme_bw() +
-  labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts",
-       subtitle="Data from Oregon Education Department",
-       x="Rate of Regular Attendance (%)",
-       y="Percentage of proficient students (%)",
-       tag = "Plot 1")
-
-#Adding plot for attendance vs. proficiency, faceted by race
-attend_race %>%
-  ggplot(aes(x=percent_regular_attenders, y=percent_proficient,group=student_group)) +
-  geom_point() +
-  geom_smooth(method='lm', color="violet") +  
-  facet_wrap(~student_group) +
-  theme_bw() +
-  labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts by Different Races",
-       subtitle="Data from Oregon Education Department",
-       x="Rate of Regular Attendance (%)",
-       y="Percentage of proficient students (%)",
-       tag="Plot 2")
-
 ```
 
 ```{r regression}
