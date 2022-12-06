@@ -311,7 +311,7 @@ modelsummary(attpro, stars=T,
              gof_omit = "Adj.|AIC|BIC|RMSE",
              coef_rename = c("percent_proficient" = "Student proficiency in ELA"),
              notes = c("Notes: Cells represent coefficients and standard errors in parentheses."),
-             output = "~/Desktop/Oregon-made/scripts/table1.docx")
+             output = here("scripts", "table1.docx"))
 
 
 ```
@@ -398,9 +398,18 @@ plot3
 When looking at school-level data, attendance rate and proficiency rate has a positive relationship. Schools with 1% higher attendance rate saw a x% increase in their percentage of proficient students. Our linear model explains ...% of the data point, with the standard error of...
 
 ## Regression and Plot 2
-When faceted by students' racial and ethnic groups, we can see a clear change in the slope of the line. Using White students as the reference group, the Asian group has a steeper slope, suggesting 1% increase in attendance rate results in a higher increase in the rate of proficiency for the Asian group than for the White group. Whereas, the Black/African American group, the Hispanic/Latino group, and the Pacific Islander group had flatter line, suggesting that the positive impact of attendance rate on proficiency rate is weaker for these groups than for their White counterparts.  
+When faceted by students' racial and ethnic groups, we can see a clear change in the slope of the line. Using White students as the reference group, the Asian group has a steeper slope, suggesting 1% increase in attendance rate results in a higher increase in the rate of proficiency for the Asian group than for the White group. Whereas, the Black/African American group, the Hispanic/Latino group, and the Pacific Islander group had flatter line, suggesting that the positive impact of attendance rate on proficiency rate is weaker for these groups than for their White counterparts. 
 
-Interestingly, all the data points for the Asian group show up after in the far right part of their plot, indicating high attendance rate for this group of students - above 60% in all the schools we looked at. Contradictingly, the Pacific Islander group had low attendance - below 70% across all schools.
+To explain the varying effect of attendance rate on student proficiency across racial and ethnic groups, we suppose that there are other variables that correlate with racial and ethnic groups and it is those omitted variables, not racial and ethnic groups that have impacts on the relationship between attendance and proficiency. For example, students coming from lower-income households that frequently experience food insecurity might have anxiety and stress that affect their performance, even when their attendance rates are the same as the reference group. This interpretation suggests that this research could be expanded to include other variables such as household incomes, free school lunch, and parents' education attainment.  
+
+Interestingly, all the data points for the Asian group show up in the far right part of their plot, indicating high attendance rate for this group of students - above 60% in all the schools we looked at. Contradictingly, the Pacific Islander group had the lowest attendance - below 70% across all schools.  
+
+# Conclusion
+
+Based on data of Oregon schools in the 2021-2022 academic year, our model predicts that for every 1% increase in attendance rate, schools will see an additional 0.75% in their percentage of students that are proficient in English, Language, and Arts, and the relationship is statistically significant. Our model suggest that a reasonable measure schools can use to improve proficiency rate is to encourage students to attend class more regularly. Policies such as offering free school lunch, addressing bullying, and providing teachers with diversity, equity, and inclusion training have the potential to improve attendance, and should be considered as schools attempt to improve student proficiency.  
+
+Our research also preliminary looked at how the relationship between attendance and proficiency varies across student racial and ethnic groups. While our visual exploration suggests the relationship does vary, additional research is needed to confirm this hypothesis and identify the relationship patterns.
+
 
 
 \newpage
