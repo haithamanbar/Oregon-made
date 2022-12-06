@@ -202,7 +202,7 @@ Doing regression
 
 ```{r regression}
 attpro <- lm(formula = percent_regular_attenders~percent_proficient  , data = attend_race)
-summary(attpro)
+summary(attpro) 
 ```
 
 The estimated y-intercept is 46.57 which tells us the predicted value of proficiency when school attendance is zero.
@@ -231,15 +231,15 @@ attend_summary <- attend_race %>%
   mutate(percent_chron_absent = round(percent_chron_absent, 2)) 
 
 attend_summary <- attend_summary  %>%
-  select(-number_chronically_absent, -number_regular_attenders, -students_included, -percent_regular_attenders) %>% 
+  select(-number_chronically_absent, -number_regular_attenders, -students_included, -percent_chron_absent) %>% 
   pivot_wider(
     names_from = "student_group",
-    values_from = "percent_chron_absent") %>% 
+    values_from = "percent_regular_attenders") %>% 
   clean_names() %>% 
 pivot_longer(
   cols = 1:6,
-  names_to = "race",
-  values_to = "percent_chron_absent") 
+  names_to = "Race",
+  values_to = "Regular attenders") 
   
 
 
@@ -256,14 +256,14 @@ prof_summary <- attend_race %>%
   clean_names() %>% 
   pivot_longer(
       cols = 1:6,
-  names_to = "race",
-  values_to = "percent_proficient") 
+  names_to = "Race",
+  values_to = "Percent proficient") 
 
 
 mixed_table <- left_join(attend_summary, prof_summary)
 
 mixed_table <- mixed_table %>% 
-  mutate(race = recode(race, 
+  mutate(Race = recode(Race, 
                        asian = "Asian",
                        hispanic_latino = "Hispanic/latino",
                        black_african_american = "Black African American",
