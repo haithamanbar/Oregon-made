@@ -69,7 +69,8 @@ attend1 <- attend %>%
                                "American Indian/Alaska Native",
                                "Native Hawaiian/Pacific Islander",
                                "Multi-Racial")) %>%
-  mutate(student_group=recode(student_group,"Native Hawaiian/Pacific Islander" = "Pacific Islander"))
+  mutate(student_group = recode(student_group, "Native Hawaiian/Pacific Islander" = "Pacific Islander"))
+
 
 
 #Removing rows without data
@@ -148,7 +149,17 @@ attend_race <- left_join(attend1, race3, by=c("district_id"="district_id", "inst
   drop_na()
 
 ```
+
+```{r number-of-schools}
+
+school_num <- attend_race %>% 
+  group_by(institution) %>% 
+  summarize() %>%
+  count()
+```
+
 ## Methods
+
 
 Research question, hypothesis
 Details about sample: sample size =n, race and ethnic group
@@ -175,37 +186,6 @@ We use the function _pivot_wider_ by student group in [@tidyverse] package {tidy
 
 To interpret our results, we further present them in a scatter plots using {ggplot2} of [@tidyverse]. In Plot 1, we plot the percentage of proficient students based on the rate of regular attendance. In Plot 2 below, we use _facet_wrap_ function of {ggplot2} plot the rate of regular attendance by percentage of proficient students based on the race.  
 
-```{r plot1, results='asis'}
-
-#Adding plot for attendance vs. proficiency
-attend_race %>%
-  group_by(institution_id) %>%
-  summarize(students_included = sum(students_included),
-            number_regular_attenders = sum(number_regular_attenders),
-            percent_regular_attenders = number_regular_attenders/students_included *100,
-            number_proficient = sum(number_proficient),
-            number_of_participants = sum(number_of_participants),
-            percent_proficient = number_proficient/number_of_participants *100) %>%
-  ggplot(aes(x=percent_regular_attenders, y=percent_proficient)) +
-  geom_point() +
-  geom_smooth(method='lm', color="violet") +
-  theme_bw() +
-  labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts",
-       subtitle="Data from Oregon Education Department",
-       x="Rate of Regular Attendance (%)",
-       y="Percentage of proficient students (%)",
-       tag = "Plot 1")
-
-```
-
-Doing regression
-
-```{r regression}
-attpro <- lm(formula = percent_regular_attenders~percent_proficient  , data = attend_race)
-summary(attpro) 
-```
-
-The estimated y-intercept is 46.57 which tells us the predicted value of proficiency when school attendance is zero.
 
 Summary table
 
@@ -281,6 +261,49 @@ mixed_table %>%
     
 ```
 
+
+
+
+```{r regression}
+attpro <- lm(formula = percent_regular_attenders~percent_proficient  , data = attend_race)
+summary(attpro) 
+
+anova(attpro)
+
+```
+
+A simple regression analysis was run to examine the relationship between the percentage of regular attenders and the percentage of proficient students in Oregon schools. A total of `r school_num` Oregon schools with existing data were included in the sample. The results indicated that the percent of regular attendance could statistically significantly predict the percent of proficient students B1=0.423, SE(B1)=0.013, t(2237)=32.5, p<.0001. The results explained that regular attendance accounted for 32% of the explained variability in the percent of proficient students, F (1, 2237) = 1056, p < .0001. The regression equation was: 
+
+
+
+_Predicted percentage of proficient students = 46.5 + 0.423 (percentage of regular attendance)_
+
+```{r plot1, results='asis'}
+
+#Adding plot for attendance vs. proficiency
+attend_race %>%
+  group_by(institution_id) %>%
+  summarize(students_included = sum(students_included),
+            number_regular_attenders = sum(number_regular_attenders),
+            percent_regular_attenders = number_regular_attenders/students_included *100,
+            number_proficient = sum(number_proficient),
+            number_of_participants = sum(number_of_participants),
+            percent_proficient = number_proficient/number_of_participants *100) %>%
+  ggplot(aes(x=percent_regular_attenders, y=percent_proficient)) +
+  geom_point() +
+  geom_smooth(method='lm', color="violet") +
+  theme_bw() +
+  labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts",
+       subtitle="Data from Oregon Education Department",
+       x="Rate of Regular Attendance (%)",
+       y="Percentage of proficient students (%)",
+       tag = "Plot 1")
+
+```
+
+
+
+
 ```{r plot2}
 
 #Adding plot for attendance vs. proficiency, faceted by race
@@ -297,12 +320,6 @@ attend_race %>%
        tag="Plot 2")
 
 ```
-
-
-
-
-
-
 
 # Discussions
 
