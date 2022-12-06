@@ -186,7 +186,7 @@ Once our hypothesis for the first research question is confirmed, we looked at w
 
 ```{r summary-table, results='markup'}
 
-#Transforming relevant columns into integrer
+#Transforming relevant columns into interger
 attend_race <- attend_race %>%
   transform(
     students_included = as.integer(students_included), 
@@ -312,7 +312,6 @@ modelsummary(attpro, stars=T,
              coef_rename = c("percent_proficient" = "Student proficiency in ELA"),
              notes = c("Notes: Cells represent coefficients and standard errors in parentheses."),
              output = here("scripts", "table1.docx"))
-
 
 ```
 
