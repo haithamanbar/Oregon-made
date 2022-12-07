@@ -23,13 +23,19 @@ library(modelsummary)
 
 
 # Abstract
+While multiple researchers have suggest a relationship between student attendance and student proficiency, our research examined this relationship using school-level data from the Oregon Department of Education in the latest academic year, 2021-2022.  
+
+Our regression model predicts that any 1 percentage point increase in a school's ratio of regular attenders, there is an additional, statistically significant 0.75 percentage point increase in the school's ratio of students proficient in English, Language, and Arts.  
+
+We also provide a preliminary observation of how the attendance-proficiency relationship varies across student racial and ethnic groups. While our visual exploration suggests that this relationship does vary, additional research is needed to take into account other factors that may correlate with race such as familial background and socio-economic factors.
+
 
 # Introduction
 
 
-It is a common assumption that with chronic absenteeism, students’ academic performance decreases, as when students fail to attend school, they miss the opportunity to learn. Therefore,. Previous reviews have stated that chronic absenteeism produces multiple impacts on student outcomes, including lower scores on reading and math, social-emotional development, grade retention and dropout and student discipline [@patnode2018]. On the long run, chronic absenteeism may lead to failure to graduate, underemployment, and financial instability [@henderson2014]. In turn, regular attendance to classes should be a predictor of better performance, and lead to an increased likelihood of graduation. 
+It is a common assumption that with chronic absenteeism, students’ academic performance decreases, as when students fail to attend school, they miss the opportunity to learn. Previous reviews have stated that chronic absenteeism produces multiple impacts on student outcomes, including lower scores on reading and math, social-emotional development, grade retention and dropout and student discipline [@patnode2018]. On the long run, chronic absenteeism may lead to failure to graduate, underemployment, and financial instability [@henderson2014]. In turn, regular attendance to classes should be a predictor of better performance, and lead to an increased likelihood of graduation. 
 
-Multiple social and economic factors can affect attendance to school. Among these are economic hardship, food insecurity, housing instability, health care access, failing home and school infrastructure, transportation, under-resourced schools, school climate and culture, and attendance culture [@henderson2014]. In fact, school attendance can vary by student group. A national report found variations in attendance and chronic absenteeism when comparing gender, race/ethnicity and language status, FRPL (free or reduced- price lunch) eligibility (our proxy for poverty status), and IEP (individualized education program) status (our proxy for disability status) [@garcia2018]. 
+Multiple social and economic factors can affect attendance to school. Among these are economic hardship, food insecurity, housing instability, health care access, failing home and school infrastructure, transportation, under-resourced schools, school climate and culture, and attendance culture [@henderson2014]. In fact, school attendance can vary by student group. A national report found variations in attendance and chronic absenteeism when comparing gender, race/ethnicity and language status, free or reduced- price lunch eligibility (proxy for poverty status), and individualized education program status (proxy for disability status) [@garcia2018]. 
 
 School profiles and reports to the Department of Education include relevant information on school characteristics that can be used to understand how social and economic factors affect student performance [@ODEreport].In the state of Oregon, previous data has shown how factors related to absenteeism affect student performance. For example, a report from 2014 showed that in Oregon children of color were disproportionately affected by the consequences of chronic absenteeism. In addition, it showed that for 2009-2010, the student groups with higher absenteeism rates were Black, American Indian and Economically Disadvantaged students [@henderson2014].
 
@@ -43,7 +49,28 @@ To explore if regular attendance to classes affected student performance during 
 
 # Methods
 
-We ran a regression model on attendance data and proficiency data of schools in Oregon. We obtained two different data sets from the Oregon Department of Education (ODE): attendance rate by school and student group, and proficiency in English, Language, and Arts by student group. 
+We obtained two data sets from the Oregon Department of Education (ODE): attendance rate by school and student group, and proficiency in English, Language, and Arts by student group in the 2021-2022 academic year. We explored the data visually and ran a regression model to examine the relationship between attendance and proficiency in Oregon schools. 
+
+Both data sets we have contain school-level data, broken down by racial and ethnic groups. While the relationship between attendance and student proficiency would be better explained from student-level data, we were not able to obtain data in such format. Our analysis is based on data at the school or institution level. 
+
+
+## Methodological approach
+
+The research questions and methodological approach we used to answer each of them are:
+
+### RQ1: Does attendance rate affect student proficiency in English, Language, and Arts?  
+
+To answer the first research question, we run a linear regression model, using schools' proficiency rate as the dependent variable, and attendance rate as the independent variable. Our regression equation is:
+
+
+_Percent of proficient students = Bo + B1 (Percent of regular attendance) + e_
+
+Our hypothesis is that schools with higher student attendance have higher rate of student proficiency in English, Language, and Arts.  
+
+### RQ2: Does such a relationship between attendance and proficiency vary for different racial and ethnic groups?  
+
+For the second question, we looked at whether students' racial and ethnic backgrounds had implications on the effect of attendance on student proficiency. In other words, if students have different racial and ethnic backgrounds, would attendance improve proficiency in the same way. From the literature we reviewed, our hypothesis is that schools will see different impacts of attendance on proficiency for different student groups. To answer this question, we only developed an assessment of the data based on multiple graphics, without fitting a statistical model. 
+
 
 ## Data description and preparation
 
@@ -149,7 +176,7 @@ race3 <- race2 %>%
 
 ```
 
-After cleaning, we merged the two data sets by matching schools’ IDs and student race and ethnicity. Rows with attendance data only or proficiency data only will be removed. We used the _left_join_ in the {dplyr} and _drop_na_ in{tidyr}, all contained in [@tidyverse].A 
+After cleaning, we merged the two data sets by matching schools’ IDs and student race and ethnicity. Rows with attendance data only or proficiency data only will be removed. We used the _left_join_ in the {dplyr} and _drop_na_ in{tidyr}, all contained in [@tidyverse]. 
 
 ```{r join}
 #Check that 2 data sets have matching student groups
@@ -171,28 +198,76 @@ school_num <- attend_race %>%
 
 ```
 
+After cleaning the data, a total of `r school_num` schools were included in the sample, containing information of the percentage of proficient students and the percentage of regular attendance by race or ethnicity in each school. We use this cleaned data set to run a regression model as described in the Methodological approach section.  
 
-## Methodological approach
-
-The data sets we obtained from the Oregon Department of Education contain school-level data, broken down by racial and ethnic groups. While the relationship between attendance and student proficiency would be better explained from student-level data, we were not able to obtain data in such format. Therefore, all the data presented here is at the school or institution level. 
-
-After cleaning the data, a total of `r school_num` schools were included in the sample, containing information of the percentage of proficient students and the percentage of regular attendance by race or ethnicity. Six races were identified in the data from ODE: Asian, Black African American, Hispanic/latino, Multi Racial, Pacific Islander and White. Pacific Islander included students identified as having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands and not Hispanic. _Table 1_ contains a summary of this information. We used the function _pivot_wider_ by student group in [@tidyverse] package {tidyr} to have columns by race. This is followed by _pivot_longer_ and another _pivot_wider_ to make the table presentable. We use the _kable_ function found in [@Xie2021-ps] to present the results. 
-
-The research questions and methodological approach we used to answer each of them are:
-
-### RQ1: Does attendance rate affect student proficiency in English, Language, and Arts?  
-
-To answer the first research question, we run a linear regression model, using schools' proficiency rate as the dependent variable, and attendance rate as the independent variable. Our regression equation is:
+From our clean data set, we identified six racial and ethnic groups: Asian, Black African American, Hispanic/Latino, Multi-racial, Pacific Islander and White. Pacific Islander included students identified as having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands and not Hispanic. We examined the relationship between attendance and student proficiency for each racial and ethnic group using a summary table (attained by using _pivot_wider_, _pivot_longer_, and _kable_) and a visual exploration (attained by using _ggplot_). We did not run regressions for the racial and ethnic groups.
 
 
-_Percent of proficient students = Bo + B1 (Percent of regular attendance) + e_
 
-Our hypothesis is that schools with higher student attendance have higher rate of student proficiency in English, Language, and Arts.  
+# Results
 
-### RQ2: Does such a relationship between attendance and proficiency vary for different racial and ethnic groups?  
+## The relationship between attendance and proficiency at school level
 
-For the second question, we looked at whether students' racial and ethnic backgrounds had implications on the effect of attendance on student proficiency. In other words, if students have different racial and ethnic backgrounds, would attendance improve proficiency in the same way. From the literature we reviewed, our hypothesis is that schools will see different impacts of attendance on proficiency for different student groups. To answer this question, we only developed an assessment of the data based on multiple graphics, without fitting a statistical model. 
+```{r regression}
+attpro <- lm(formula = percent_proficient ~ percent_regular_attenders, data = attend_race)
+summary(attpro) 
 
+anova(attpro)
+
+```
+
+We ran a simple regression analysis to examine the relationship between the percentage of regular attenders and the percentage of proficient students in Oregon schools. A total of `r school_num` Oregon schools with existing data were included in the sample.
+
+The results indicated that the percent of regular attendance could statistically significantly predict the percent of proficient students B1=0.75, SE(B1)=0.02, t(2237)=32.5, p<.0001. The results explained that regular attendance accounted for 32% of the explained variability in the percent of proficient students, F (1, 2237) = 1056, p < .0001. The regression equation was: 
+
+_Percentage of proficient students = -6.09 + 0.75 (Percentage of regular attendance)_
+
+This equation indicates that for a 1 percentage point increase in a school's ratio of regular attenders, there is a 0.75 percentage point increase in that school's ratio of proficient students in English, Language, and Arts. We created Figure 1 to demonstrate our data analysis using {ggplot2} of [@tidyverse].  
+
+```{r plot1, results='asis', fig.width = 6.5, fig.height = 4}
+
+#Adding plot for attendance vs. proficiency
+attend_race %>%
+  group_by(institution_id) %>%
+  summarize(students_included = sum(students_included),
+            number_regular_attenders = sum(number_regular_attenders),
+            percent_regular_attenders = number_regular_attenders/students_included *100,
+            number_proficient = sum(number_proficient),
+            number_of_participants = sum(number_of_participants),
+            percent_proficient = number_proficient/number_of_participants *100) %>%
+  ggplot(aes(x=percent_regular_attenders, y=percent_proficient)) +
+  geom_point(size = 0.3) +
+  geom_smooth(method='lm', color="violet") +
+  theme_bw() +
+  annotate("text",
+           label = expression(hat(Y)~`= -6.09 + 0.75*`~ hat(X)),
+           x = 25, y = 75,
+           size = 4) +
+  labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts",
+       subtitle="Data from Oregon Education Department",
+       x="Rate of Regular Attendance (%)",
+       y="Percentage of proficient students (%)",
+       caption = "Figure 1")
+
+```
+
+
+```{r}
+
+modelsummary(attpro, stars=T,
+             gof_omit = "Adj.|AIC|BIC|RMSE",
+             coef_rename = c("percent_proficient" = "Student proficiency in ELA"),
+             notes = c("Notes: Cells represent coefficients and standard errors in parentheses."),
+             output = here("scripts", "table1.docx"))
+
+```
+
+
+
+## The relationship between attendance and proficiency among different student racial and ethnic groups 
+
+_Table 1_ provides a summary of the mean attendance rate and mean proficiency rate for six racial and ethnic groups across Oregon schools. _Figure 2_ and _Figure 3_ provide a visual display of how attendance and proficiency data spread for different groups.
+ 
 ```{r summary-table, results='markup'}
 
 #Transforming relevant columns into interger
@@ -209,10 +284,8 @@ attend_summary <- attend_race %>%
     summarise(students_included = sum(students_included),
             number_regular_attenders = sum(number_regular_attenders),
             number_chronically_absent = sum(number_chronically_absent)) %>% 
-  mutate(percent_regular_attenders = (number_regular_attenders / students_included * 100)) %>% 
-  mutate(percent_regular_attenders = round(percent_regular_attenders, 2)) %>% 
-  mutate(percent_chron_absent = (number_chronically_absent / students_included * 100)) %>% 
-  mutate(percent_chron_absent = round(percent_chron_absent, 2)) 
+  mutate(percent_regular_attenders = round(number_regular_attenders / students_included * 100,2),
+         percent_chron_absent = round(number_chronically_absent / students_included * 100,2)) 
 
 attend_summary <- attend_summary  %>%
   select(-number_chronically_absent, -number_regular_attenders, -students_included, -percent_chron_absent) %>% 
@@ -249,82 +322,22 @@ mixed_table <- left_join(attend_summary, prof_summary)
 mixed_table <- mixed_table %>% 
   mutate(Race = recode(Race, 
                        asian = "Asian",
-                       hispanic_latino = "Hispanic/latino",
+                       hispanic_latino = "Hispanic/Latino",
                        black_african_american = "Black African American",
                        multi_racial = "Multi Racial",
                        pacific_islander = "Pacific Islander",
                        white = "White"
                        ))
 
-mixed_table %>% 
+table_1 <- mixed_table %>% 
   kable(caption="Summary table",
         col.names=c("Race/ ethnicity",
-                    "Percent Chronically absent", 
+                    "Percent regular attenders", 
                     "Percent proficient"))
-
+table_1
     
 ```
 
-# Results
-
-```{r regression}
-attpro <- lm(formula = percent_proficient ~ percent_regular_attenders, data = attend_race)
-summary(attpro) 
-
-anova(attpro)
-
-```
-
-We ran a simple regression analysis to examine the relationship between the percentage of regular attenders and the percentage of proficient students in Oregon schools. A total of `r school_num` Oregon schools with existing data were included in the sample.
-
-The results indicated that the percent of regular attendance could statistically significantly predict the percent of proficient students B1=0.75, SE(B1)=0.02, t(2237)=32.5, p<.0001. The results explained that regular attendance accounted for 32% of the explained variability in the percent of proficient students, F (1, 2237) = 1056, p < .0001. The regression equation was: 
-
-_Percentage of proficient students = -6.09 + 0.75 (Percentage of regular attendance)_
-
-To interpret our results, we created scatter plots using {ggplot2} of [@tidyverse]. In Figure 1, we plotted the percentage of proficient students based on the rate of regular attendance. 
-
-```{r plot1, results='asis', fig.width = 6.5, fig.height = 4}
-
-#Adding plot for attendance vs. proficiency
-attend_race %>%
-  group_by(institution_id) %>%
-  summarize(students_included = sum(students_included),
-            number_regular_attenders = sum(number_regular_attenders),
-            percent_regular_attenders = number_regular_attenders/students_included *100,
-            number_proficient = sum(number_proficient),
-            number_of_participants = sum(number_of_participants),
-            percent_proficient = number_proficient/number_of_participants *100) %>%
-  ggplot(aes(x=percent_regular_attenders, y=percent_proficient)) +
-  geom_point(size = 0.3) +
-  geom_smooth(method='lm', color="violet") +
-  theme_bw() +
-  annotate("text",
-           label = expression(hat(Y)~`= -6.09 + 0.75*`~ hat(X)),
-           x = 25, y = 75,
-           size = 4) +
-  labs(title="Student Attendance and Proficiency Rate \n in English, Language, and Arts",
-       subtitle="Data from Oregon Education Department",
-       x="Rate of Regular Attendance (%)",
-       y="Percentage of proficient students (%)",
-       caption = "Figure 1.")
-
-```
-
-
-```{r}
-
-modelsummary(attpro, stars=T,
-             gof_omit = "Adj.|AIC|BIC|RMSE",
-             coef_rename = c("percent_proficient" = "Student proficiency in ELA"),
-             notes = c("Notes: Cells represent coefficients and standard errors in parentheses."),
-             output = here("scripts", "table1.docx"))
-
-```
-
-
-
-## Interpret boxplots here 
- 
 
 ```{r boxplots, fig.width = 6.5, fig.height = 3}
 
@@ -337,7 +350,7 @@ plot4 <- attend_race %>%
   labs(x = " ",
        y="Proficient students (%)",
        title = "Rate of proficient students by race in Oregon schools",
-       caption = "Figure 2.") +
+       caption = "Figure 2") +
   coord_flip()
 plot4
 
@@ -350,14 +363,19 @@ plot3 <- attend_race %>%
   labs(x = " ",
        y="Regular attendance (%)",
        title = "Rate of regular attendance by race in Oregon schools",
-       caption = "Figure 3.") +
+       caption = "Figure 3") +
   coord_flip()
 plot3
 
 ```
 
+In term of proficiency, there are vast differences in the mean rate of proficient students between different racial and ethnic groups. If we take White as the reference group with 50.98% students proficient in English, Language, and Arts, the Asian group had a higher proficiency rate of 64.18% while the Pacific Islander, Black/African American, and Hispanic/Latino groups had considerably lower proficiency rates of 15.99%, 19.60%, and 26.11%, respectively.  
 
-In Figure 4 below, we used _facet_wrap_ function of {ggplot2} plot the rate of regular attendance by percentage of proficient students based on the race. To answer the second research question, we only included a visual representation of the data, but we didn't fit a regression model. Therefore, we evaluated the data only through a visual assessment.
+In term of attendance, we found a similar pattern, although the differences are less profound. The White reference group had 67.28% regular attenders. The Asian group surpassed the White group with 86.21% regular attenders. This ratio for Pacific Islanders, Black/African Americans, and Hispanics/Latinos is 36.18%, 50.61%, and 56.12%, respectively.  
+
+The Multi-racial group had similar rates as the White group in both attendance and student proficiency with slight differences.  
+
+In Figure 4 below, we used _facet_wrap_ function of {ggplot2} plot the rate of regular attendance by percentage of proficient students based on the race.  
 
 ```{r plot2}
 
@@ -376,24 +394,20 @@ attend_race %>%
 
 ```
 
+When faceted by students' racial and ethnic groups, we can see a clear change in the slope of the line. Using White students as the reference group, the Asian group has a steeper slope, suggesting 1% increase in attendance rate results in a higher increase in the rate of proficiency for the Asian group than for the White group. Whereas, the Black/African American group, the Hispanic/Latino group, and the Pacific Islander group had flatter lines, suggesting that the positive impact of attendance rate on proficiency rate is weaker for these groups than for their White counterparts.  
+
+Interestingly, all the data points for the Asian group show up after in the far right part of their plot, indicating uniformly high attendance rate for this group of students - above 60% in all the schools we looked at, while the Pacific Islander group had low attendance - below 70% across all schools. 
 
 # Discussion & Conclusions
 
-## Regression and Plot 1
-When looking at school-level data, attendance rate and proficiency rate has a positive relationship. Schools with 1% higher attendance rate saw a x% increase in their percentage of proficient students. Our linear model explains ...% of the data point, with the standard error of...
+Based on data of Oregon schools in the 2021-2022 academic year, our model predicts that for every 1 percentage point increase in attendance rate, schools will see an additional 0.75% percentage point in their ratio of students that are proficient in English, Language, and Arts, and the relationship is statistically significant. This agrees with [@henderson2014] whose study shows that regular attendance to classes should be a predictor of better performance. Our model suggest that a reasonable measure schools can use to improve proficiency rate is to encourage students to attend class more regularly. Policies such as offering free school lunch, addressing bullying, and providing teachers with diversity, equity, and inclusion training have the potential to improve attendance, and should be considered as schools attempt to improve student proficiency.  
 
-## Regression and Plot 2
-When faceted by students' racial and ethnic groups, we can see a clear change in the slope of the line. Using White students as the reference group, the Asian group has a steeper slope, suggesting 1% increase in attendance rate results in a higher increase in the rate of proficiency for the Asian group than for the White group. Whereas, the Black/African American group, the Hispanic/Latino group, and the Pacific Islander group had flatter line, suggesting that the positive impact of attendance rate on proficiency rate is weaker for these groups than for their White counterparts. 
+Our data comparison across student racial and ethnic groups confirms the findings of [@garcia2018] that attendance and chronic absenteeism vary when comparing various groups and socio-economic factors. [@henderson2014] has similar finding that multiple social and economic factors can affect attendance to school which include economic hardship, food insecurity, housing instability, health care access, failing home and school infrastructure, transportation, under-resourced schools, school climate and culture, and attendance culture.  
 
-To explain the varying effect of attendance rate on student proficiency across racial and ethnic groups, we suppose that there are other variables that correlate with racial and ethnic groups and it is those omitted variables, not racial and ethnic groups that have impacts on the relationship between attendance and proficiency. For example, students coming from lower-income households that frequently experience food insecurity might have anxiety and stress that affect their performance, even when their attendance rates are the same as the reference group. This interpretation suggests that this research could be expanded to include other variables such as household incomes, free school lunch, and parents' education attainment.  
+Our research also looked at how the relationship between attendance and proficiency varies across student racial and ethnic groups. Based on our preliminary observation and our literature review, we suppose that there are other variables that correlate with racial and ethnic groups and it is those omitted variables, not racial and ethnic groups that have impacts on the relationship between attendance and proficiency. For example, students coming from lower-income households that frequently experience food insecurity might have anxiety and stress that affect their performance, even when their attendance rates are the same as the reference group. While our visual exploration suggests the relationship does vary, additional research is needed to confirm this hypothesis and identify the relationship patterns. This leads us to conclude that interpretation this research could be expanded to include other variables such as household incomes, free school lunch, parents' education attainment, and other relevant factors.  
 
-Interestingly, all the data points for the Asian group show up in the far right part of their plot, indicating high attendance rate for this group of students - above 60% in all the schools we looked at. Contradictingly, the Pacific Islander group had the lowest attendance - below 70% across all schools.  
+To conclude, our research, based on data from Oregon schools, confirmed the relationship between attendance and student proficiency as many researchers have suggested. While our preliminary data exploration suggest that this relationship varies across student racial and ethnic groups, there need to be additional research that takes into account other family background and socio-economic factors.  
 
-# Conclusion - (Merge this in the previous section)
-
-Based on data of Oregon schools in the 2021-2022 academic year, our model predicts that for every 1% increase in attendance rate, schools will see an additional 0.75% in their percentage of students that are proficient in English, Language, and Arts, and the relationship is statistically significant. Our model suggest that a reasonable measure schools can use to improve proficiency rate is to encourage students to attend class more regularly. Policies such as offering free school lunch, addressing bullying, and providing teachers with diversity, equity, and inclusion training have the potential to improve attendance, and should be considered as schools attempt to improve student proficiency.  
-
-Our research also preliminary looked at how the relationship between attendance and proficiency varies across student racial and ethnic groups. While our visual exploration suggests the relationship does vary, additional research is needed to confirm this hypothesis and identify the relationship patterns.
 
 
 
