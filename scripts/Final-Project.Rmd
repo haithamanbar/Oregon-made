@@ -283,7 +283,7 @@ _Percentage of proficient students = -6.09 + 0.75 (Percentage of regular attenda
 
 To interpret our results, we created scatter plots using {ggplot2} of [@tidyverse]. In Figure 1, we plotted the percentage of proficient students based on the rate of regular attendance. 
 
-```{r plot1, results='asis'}
+```{r plot1, results='asis', fig.width = 6.5, fig.height = 4}
 
 #Adding plot for attendance vs. proficiency
 attend_race %>%
@@ -295,7 +295,7 @@ attend_race %>%
             number_of_participants = sum(number_of_participants),
             percent_proficient = number_proficient/number_of_participants *100) %>%
   ggplot(aes(x=percent_regular_attenders, y=percent_proficient)) +
-  geom_point() +
+  geom_point(size = 0.3) +
   geom_smooth(method='lm', color="violet") +
   theme_bw() +
   annotate("text",
@@ -306,10 +306,9 @@ attend_race %>%
        subtitle="Data from Oregon Education Department",
        x="Rate of Regular Attendance (%)",
        y="Percentage of proficient students (%)",
-       tag = "Figure 1.")
+       caption = "Figure 1.")
 
 ```
-
 
 
 ```{r}
@@ -327,15 +326,18 @@ modelsummary(attpro, stars=T,
 ## Interpret boxplots here 
  
 
-```{r}
+```{r boxplots, fig.width = 6.5, fig.height = 3}
+
+
+
 plot4 <- attend_race %>%
     ggplot(aes(x = student_group, y = percent_proficient)) +
    geom_boxplot(fill = "skyblue", alpha = 0.5) +
   theme_bw() +
-  labs(title="Percent proficient by race",
-       x="Race",
-       y="Percent proficient (%)",
-       tag="Figure 2.") +
+  labs(x = " ",
+       y="Proficient students (%)",
+       title = "Rate of proficient students by race in Oregon schools",
+       caption = "Figure 2.") +
   coord_flip()
 plot4
 
@@ -345,10 +347,10 @@ plot3 <- attend_race %>%
     ggplot(aes(x = student_group, y = percent_regular_attenders)) +
    geom_boxplot(fill = "skyblue", alpha = 0.5) +
   theme_bw() +
-  labs(title="Percent regular attendance by race",
-       x="Race",
-       y="Percent regular attendance (%)",
-       tag="Figure 3.") +
+  labs(x = " ",
+       y="Regular attendance (%)",
+       title = "Rate of regular attendance by race in Oregon schools",
+       caption = "Figure 3.") +
   coord_flip()
 plot3
 
@@ -362,7 +364,7 @@ In Figure 4 below, we used _facet_wrap_ function of {ggplot2} plot the rate of r
 #Adding plot for attendance vs. proficiency, faceted by race
 attend_race %>%
   ggplot(aes(x=percent_regular_attenders, y=percent_proficient,group=student_group)) +
-  geom_point() +
+  geom_point(size = 0.2) +
   geom_smooth(method='lm', color="violet") +  
   facet_wrap(~student_group) +
   theme_bw() +
@@ -370,7 +372,7 @@ attend_race %>%
        subtitle="Data from Oregon Education Department",
        x="Rate of Regular Attendance (%)",
        y="Percentage of proficient students (%)",
-       tag="Figure 4.") 
+       caption = "Figure 4.") 
 
 ```
 
